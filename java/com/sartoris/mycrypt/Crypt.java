@@ -146,12 +146,14 @@ class Crypt {
 	{
 		boolean success = false;
 		String decrypted = null;
-		if (this.getPassword())
+		if (this.getPassword(filename))
 		{
 			try
 			{
 				byte[] encrypted = Files.readAllBytes(Path.of(filename));
 				decrypted = CryptKeeper.decrypt(encrypted, this.password);
+				this.setText(decrypted);
+				this.setFilename(filename);
 				success = true;
 			}
 			catch (Exception ex)
@@ -160,15 +162,17 @@ class Crypt {
 				Program.showMessage("That password is no good!");
 			}
 		}
-		this.setText(decrypted);
-		this.setFilename(filename);
+		else
+		{
+			Program.showMessage("That password is no good!");
+		}
 		return success;
 	}
 
 	private boolean saveFile(String filename)
 	{
 		boolean success = false;
-		if (this.setPassword()) {
+		if (this.setPassword(filename)) {
 			try
 			{
 				byte[] encrypted = CryptKeeper.encrypt(this.getText(), this.password);
@@ -183,17 +187,17 @@ class Crypt {
 		return success;
 	}
 
-	private boolean getPassword() {
-		return this.displayPasswordDialog(false);
+	private boolean getPassword(String filename) {
+		return this.displayPasswordDialog(filename, false);
 	}
 
-	private boolean setPassword() {
-		return this.displayPasswordDialog(true);
+	private boolean setPassword(String filename) {
+		return this.displayPasswordDialog(filename, true);
 	}
 
-	private boolean displayPasswordDialog(boolean confirm)
+	private boolean displayPasswordDialog(String filename, boolean confirm)
 	{
-		PasswordDialog passwordDialog = new PasswordDialog(this.password, confirm);
+		PasswordDialog passwordDialog = new PasswordDialog(filename, this.password, confirm);
 		passwordDialog.setVisible(true);
 		boolean ok = passwordDialog.ok;
 		if (ok)

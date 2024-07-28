@@ -51,8 +51,8 @@ public class PasswordDialog extends EscapeDialog implements DocumentListener {
 	private PasswordPanel passwordPanel = new PasswordPanel("Enter Password:"); 
 	private ValidationPanel confirmPanel = new ValidationPanel("Confirm Password:", true); 
 	
-	public PasswordDialog(String password, boolean confirm) {
-		super(Program.getMainFrame(), "Enter Password", true);
+	public PasswordDialog(String filename, String password, boolean confirm) {
+		super(Program.getMainFrame(), filename, true);
 		this.ok = false;
 		this.password = password;
 		this.initialize(confirm);
@@ -95,18 +95,21 @@ public class PasswordDialog extends EscapeDialog implements DocumentListener {
 			this.confirmPanel.addDocumentListener(this);
 		}
 		panel.add(Box.createRigidArea(new Dimension(0,5)));
-		panel.add(this.createCheckBox());
+		panel.add(this.createShowPasswordCheckBox());
 		panel.add(Box.createRigidArea(new Dimension(0,5)));
 		panel.add(this.createButtonPanel());
 		return panel;
 	}
 
-	private JCheckBox createCheckBox() {
-		boolean showPassword = !Program.getproperties().getHidePassword();
+	private JCheckBox createShowPasswordCheckBox() {
+		Properties properties = Program.getproperties();
+		boolean showPassword = properties.getShowPassword();
 		final JCheckBox checkBox = new JCheckBox("Show password", showPassword);
 		checkBox.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
-		    	updatePasswordDisplayState(checkBox.isSelected());
+				boolean showPassword = checkBox.isSelected();
+		    	updatePasswordDisplayState(showPassword);
+				properties.setShowPassword(showPassword);
 		    }
 		});
 		this.updatePasswordDisplayState(showPassword);

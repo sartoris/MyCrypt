@@ -34,7 +34,7 @@ import javax.swing.JOptionPane;
 public class Program {
 
 	public static String Name = "MyCrypt";
-	public static String Version = "0.2.0";
+	public static String Version = "0.3.0";
 	private static String newLine = System.lineSeparator();
 	private static JFrame mainFrame;
 	private static Properties properties = new Properties();
@@ -45,6 +45,7 @@ public class Program {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		System.out.println(System.getProperty("user.dir"));
 		if (args.length > 0) {
 			if (args[0].toLowerCase().startsWith("-r")) {
 				System.out.println(CryptKeeper.getRandomString());
@@ -56,7 +57,8 @@ public class Program {
 				Program.startViewer(args[0]);
 			}
 		} else {
-			Program.startViewer("");
+			String filename = properties.getFilename();
+			Program.startViewer(filename);
 		}
 	}
 
@@ -67,6 +69,7 @@ public class Program {
 	}
 
 	public static void close() {
+		Program.properties.save();
 		System.exit(0);
 	}
 

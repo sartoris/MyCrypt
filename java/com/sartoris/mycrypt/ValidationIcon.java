@@ -36,7 +36,7 @@ public class ValidationIcon extends JLabel {
 
 	private static final long serialVersionUID = 1L;
 	private static final String iconPackage = "/images/";
-	private static final String blankIconFile = "blank.png";
+	private static final String blankIconFile = "Blank.png";
 	private static final String validIconFile = "GreenCheck.png";
 	private static final String invalidIconFile = "RedX.png";
 	private String iconFile = invalidIconFile;

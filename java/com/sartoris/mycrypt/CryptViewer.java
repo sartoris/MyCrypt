@@ -27,6 +27,8 @@ package com.sartoris.mycrypt;
 import java.io.File;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.WindowEvent;
+
 import javax.swing.JFrame;
 
 /**
@@ -51,6 +53,14 @@ class CryptViewer extends JFrame implements CryptListener {
 		}
 	}
 
+	protected void processWindowEvent(WindowEvent e) {
+		if(e.getID() == WindowEvent.WINDOW_CLOSING) {
+			saveWindowProperties();
+			Program.getproperties().save();
+		}
+		super.processWindowEvent(e);
+	}
+
 	private void initialize() {
 		this.setIconImage(Program.getIcon().getImage());
 		this.setMinimumSize(new Dimension(600,400));
@@ -59,6 +69,7 @@ class CryptViewer extends JFrame implements CryptListener {
 		this.editor = new TextEditor();
 		this.add(this.editor);
 		this.pack();
+		this.updateWindow();
 	}
 
 	public String getText(){
@@ -71,6 +82,7 @@ class CryptViewer extends JFrame implements CryptListener {
 	public void updateFilename(String newValue) {
 		this.filename = newValue;
 		this.setTitle(String.format("%1s - %2s", Program.Name, this.filename));
+		Program.getproperties().setFilename(newValue);
 	}
 
 	/* (non-Javadoc)
@@ -87,4 +99,27 @@ class CryptViewer extends JFrame implements CryptListener {
 		this.editor.setCaretPosition(newValue);
 	}
 
+	void updateWindow() {
+		Properties properties = Program.getproperties();			
+		this.setBounds(properties.getWindowX(),
+			properties.getWindowY(),
+			properties.getWindowWidth(),
+			properties.getWindowHeight());
+		if (properties.getWindowMaximized()) {
+			this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		}
+	}
+
+	void saveWindowProperties() {
+		boolean isMaximized = this.getExtendedState() == JFrame.MAXIMIZED_BOTH;
+		Properties properties = Program.getproperties();
+		properties.setWindowMaximized(isMaximized);
+		if (!isMaximized) {
+			properties.setWindowX(this.getX());
+			properties.setWindowY(this.getY());
+			properties.setWindowWidth(this.getWidth());
+			properties.setWindowHeight(this.getHeight());
+		}
+	}
+		
 }
